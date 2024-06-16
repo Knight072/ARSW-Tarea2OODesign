@@ -3,14 +3,20 @@ package edu.escuelaing.arsw;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class NumberList implements Collection<Integer> {
+public class NumberList<T> implements Collection<Double> {
+    private Integer size = 0;
+    private NumberNode initial;
+    private NumberNode head;
     @Override
     public int size() {
-        return 0;
+        return this.size;
     }
 
     @Override
     public boolean isEmpty() {
+        if(size == 0){
+            return true;
+        }
         return false;
     }
 
@@ -20,13 +26,35 @@ public class NumberList implements Collection<Integer> {
     }
 
     @Override
-    public Iterator<Integer> iterator() {
-        return null;
+    public Iterator<Double> iterator() {
+        return new Iterator<Double>() {
+            private NumberNode current = initial;
+
+            @Override
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            @Override
+            public Double next() {
+                Double value = current.getValue();
+                current = current.getNext();
+                return value;
+            }
+        };
     }
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        NumberNode current = initial;
+        Double[] array = new Double[size];
+        int index = 0;
+        while (index < size && current != null) {
+            array[index] = current.getValue();
+            current = current.getNext();
+            index++;
+        }
+        return array;
     }
 
     @Override
@@ -35,8 +63,21 @@ public class NumberList implements Collection<Integer> {
     }
 
     @Override
-    public boolean add(Integer integer) {
-        return false;
+    public boolean add(Double number) {
+        NumberNode newNode = new NumberNode(number);
+        if (size == 0){
+            this.initial = newNode;
+        }
+        else{
+            NumberNode current = head;
+            while (current.getNext() != null){
+                current = current.getNext();
+            }
+            current.setNext(newNode);
+        }
+        this.head = newNode;
+        size += 1;
+        return true;
     }
 
     @Override
@@ -50,7 +91,7 @@ public class NumberList implements Collection<Integer> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends Integer> c) {
+    public boolean addAll(Collection<? extends Double> c) {
         return false;
     }
 
@@ -68,4 +109,5 @@ public class NumberList implements Collection<Integer> {
     public void clear() {
 
     }
+
 }
